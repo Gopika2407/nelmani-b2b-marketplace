@@ -1,0 +1,92 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Sora:wght@400;600;700;800&display=swap');
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --bg-dark: #070c09;
+    --bg-card: rgba(13, 22, 16, 0.75);
+    --border-card: rgba(52, 211, 153, 0.12);
+    --border-card-hover: rgba(245, 158, 11, 0.3);
+    
+    --brand-emerald: #10b981;
+    --brand-gold: #f59e0b;
+    --brand-amber: #d97706;
+    --brand-crimson: #ef4444;
+    
+    --font-heading: 'Sora', sans-serif;
+    --font-body: 'Inter', sans-serif;
+  }
+
+  body {
+    background-color: #070c09;
+    background-image: 
+      radial-gradient(ellipse 80% 50% at 50% -20%, rgba(16, 185, 129, 0.15), transparent),
+      radial-gradient(circle at 100% 100%, rgba(245, 158, 11, 0.05), transparent);
+    color: #f3f4f6;
+    font-family: var(--font-body);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+  }
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #070c09;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(52, 211, 153, 0.18);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #10b981;
+}
+
+/* Glass Panel Utility */
+.panel-glass {
+  background: rgba(13, 22, 16, 0.75);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(52, 211, 153, 0.12);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.panel-glass:hover {
+  border-color: rgba(245, 158, 11, 0.25);
+  box-shadow: 0 12px 35px -10px rgba(16, 185, 129, 0.15);
+}
+
+/* Gold Accent Gradient Text */
+.text-gold-gradient {
+  background: linear-gradient(135deg, #fff 30%, #fbbf24 80%, #d97706 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-emerald-gradient {
+  background: linear-gradient(135deg, #ffffff 30%, #34d399 75%, #059669 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Skeleton Loading Pulse */
+@keyframes skeleton-shimmer {
+  0% { background-position: -200px 0; }
+  100% { background-position: 200px 0; }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 75%);
+  background-size: 400px 100%;
+  animation: skeleton-shimmer 1.5s infinite ease-in-out;
+  border-radius: 6px;
+}

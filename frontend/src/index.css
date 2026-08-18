@@ -4,15 +4,6 @@
 @layer base {
   :root {
     --bg-dark: #070c09;
-    --bg-card: rgba(13, 22, 16, 0.75);
-    --border-card: rgba(52, 211, 153, 0.12);
-    --border-card-hover: rgba(245, 158, 11, 0.3);
-    
-    --brand-emerald: #10b981;
-    --brand-gold: #f59e0b;
-    --brand-amber: #d97706;
-    --brand-crimson: #ef4444;
-    
     --font-heading: 'Sora', sans-serif;
     --font-body: 'Inter', sans-serif;
   }
@@ -30,12 +21,12 @@
     transition: background-color 0.3s ease, color 0.3s ease;
   }
 
-  /* LIGHT MODE OVERRIDES */
+  /* LIGHT MODE ADAPTATION */
   html.light body {
-    background-color: #f2f7f4;
+    background-color: #f0f5f2;
     background-image: 
       radial-gradient(ellipse 80% 50% at 50% -20%, rgba(16, 185, 129, 0.18), transparent),
-      radial-gradient(circle at 100% 100%, rgba(245, 158, 11, 0.1), transparent);
+      radial-gradient(circle at 100% 100%, rgba(245, 158, 11, 0.12), transparent);
     color: #0f172a;
   }
 
@@ -60,33 +51,101 @@
   background: #10b981;
 }
 
-/* Dark Panel Utility */
+/* Dark Glass Panel */
 .panel-glass {
-  background: rgba(13, 22, 16, 0.75);
+  background: rgba(13, 22, 16, 0.85);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(52, 211, 153, 0.12);
+  border: 1px solid rgba(52, 211, 153, 0.15);
   border-radius: 16px;
   box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .panel-glass:hover {
-  border-color: rgba(245, 158, 11, 0.25);
-  box-shadow: 0 12px 35px -10px rgba(16, 185, 129, 0.15);
+  border-color: rgba(245, 158, 11, 0.3);
+  box-shadow: 0 12px 35px -10px rgba(16, 185, 129, 0.2);
 }
 
-/* Light Mode Glass Panel Override */
+/* LIGHT MODE GLASS PANEL ADAPTATION */
 html.light .panel-glass {
-  background: rgba(255, 255, 255, 0.92);
+  background: rgba(255, 255, 255, 0.95);
   border: 1px solid rgba(16, 185, 129, 0.25);
-  box-shadow: 0 10px 30px -5px rgba(16, 185, 129, 0.08);
+  box-shadow: 0 10px 30px -5px rgba(16, 185, 129, 0.1);
   color: #0f172a;
 }
 
 html.light .panel-glass:hover {
   border-color: rgba(245, 158, 11, 0.5);
-  box-shadow: 0 12px 35px -5px rgba(16, 185, 129, 0.15);
+  box-shadow: 0 12px 35px -5px rgba(16, 185, 129, 0.18);
+}
+
+/* LIGHT MODE SIDEBAR & HEADER ADAPTATION */
+html.light aside {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  border-right-color: rgba(16, 185, 129, 0.2) !important;
+}
+
+html.light header {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+  border-bottom-color: rgba(16, 185, 129, 0.2) !important;
+}
+
+/* LIGHT MODE TEXT CONTRAST OVERRIDES */
+html.light .text-slate-400 {
+  color: #475569 !important;
+}
+
+html.light .text-slate-300 {
+  color: #334155 !important;
+}
+
+html.light .text-slate-200 {
+  color: #1e293b !important;
+}
+
+html.light .text-slate-100 {
+  color: #0f172a !important;
+}
+
+html.light .text-slate-500 {
+  color: #64748b !important;
+}
+
+/* LIGHT MODE INPUT & SELECT ADAPTATION */
+html.light input,
+html.light textarea,
+html.light select {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+html.light input::placeholder,
+html.light textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+html.light input:focus,
+html.light textarea:focus,
+html.light select:focus {
+  border-color: #10b981 !important;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2) !important;
+}
+
+/* LIGHT MODE BUTTONS & TABS */
+html.light .bg-slate-950,
+html.light .bg-slate-950\/80,
+html.light .bg-slate-950\/40,
+html.light .bg-slate-900,
+html.light .bg-slate-900\/90,
+html.light .bg-slate-900\/80,
+html.light .bg-slate-900\/60,
+html.light .bg-slate-900\/50,
+html.light .bg-slate-900\/40 {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  color: #0f172a !important;
 }
 
 /* Gold Accent Gradient Text */

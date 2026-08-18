@@ -71,8 +71,9 @@ const Onboarding = () => {
       setAddress('');
       setTimeout(() => setMode('login'), 2500);
     } catch (err) {
-      setError(err);
-      triggerToast(err, 'error');
+      const msg = typeof err === 'string' ? err : err.response?.data?.message || err.message || 'Registration failed';
+      setError(msg);
+      triggerToast(msg, 'error');
     } finally {
       setLoading(false);
     }

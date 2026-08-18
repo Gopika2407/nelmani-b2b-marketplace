@@ -10,6 +10,7 @@ import Button from '../components/ui/Button';
 import Modal from '../components/ui/Modal';
 import Toast from '../components/ui/Toast';
 import SpiceThumbnail from '../components/ui/SpiceThumbnail';
+import SimpleHelpGuide from '../components/ui/SimpleHelpGuide';
 import { SkeletonTable } from '../components/ui/Skeleton';
 import { ShoppingBag, Info, Truck, RefreshCw, ShoppingCart, Layers, Landmark } from 'lucide-react';
 
@@ -243,6 +244,9 @@ const BuyerDashboard = () => {
 
         <main className="flex-1 p-6 space-y-6 max-w-7xl w-full mx-auto">
           
+          {/* Simple Step-by-Step Help Guide */}
+          <SimpleHelpGuide role="buyer" />
+
           {/* STAT CARDS */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
             <StatCard

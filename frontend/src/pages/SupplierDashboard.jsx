@@ -9,6 +9,7 @@ import Badge from '../components/ui/Badge';
 import Button from '../components/ui/Button';
 import Toast from '../components/ui/Toast';
 import SpiceThumbnail from '../components/ui/SpiceThumbnail';
+import SimpleHelpGuide from '../components/ui/SimpleHelpGuide';
 import { SkeletonTable } from '../components/ui/Skeleton';
 import { Sprout, Landmark, HelpCircle, Layers, Truck, Plus } from 'lucide-react';
 
@@ -238,6 +239,9 @@ const SupplierDashboard = () => {
 
         <main className="flex-1 p-6 space-y-6 max-w-7xl w-full mx-auto">
           
+          {/* Simple Step-by-Step Help Guide */}
+          <SimpleHelpGuide role="supplier" />
+
           {/* STAT CARDS */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
             <StatCard

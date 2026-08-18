@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth, api } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import Sidebar from '../components/ui/Sidebar';
 import Header from '../components/ui/Header';
 import StatCard from '../components/ui/StatCard';
@@ -9,19 +10,19 @@ import Button from '../components/ui/Button';
 import Modal from '../components/ui/Modal';
 import Toast from '../components/ui/Toast';
 import SpiceThumbnail from '../components/ui/SpiceThumbnail';
-import SkeletonCard, { SkeletonTable } from '../components/ui/Skeleton';
+import { SkeletonTable } from '../components/ui/Skeleton';
 import RevenueTrendChart from '../components/charts/RevenueTrendChart';
 import RevenueBreakdownChart from '../components/charts/RevenueBreakdownChart';
 
 import { 
-  ShieldCheck, Users, Settings, ShoppingBag, BarChart3, 
-  Check, X, PlusCircle, AlertCircle, Edit, Truck, Activity, 
-  DollarSign, TrendingUp, Layers, ArrowUpRight, Search
+  ShieldCheck, Check, X, Truck, DollarSign, TrendingUp, Layers
 } from 'lucide-react';
 
 const AdminDashboard = () => {
   const { user, logout } = useAuth();
-  const [activeTab, setActiveTab] = useState('dashboard'); // 'dashboard' | 'orders' | 'inventory' | 'users' | 'pricing' | 'ledger'
+  const { t } = useLanguage();
+
+  const [activeTab, setActiveTab] = useState('dashboard');
   const [searchTerm, setSearchTerm] = useState('');
 
   // Data States
@@ -221,7 +222,7 @@ const AdminDashboard = () => {
   // Table Column Definitions
   const inventoryColumns = [
     {
-      header: 'Commodity Item',
+      header: t('commodityItem'),
       cell: (row) => (
         <div className="flex items-center gap-3">
           <SpiceThumbnail category={row.category} name={row.name} size="medium" />
@@ -233,39 +234,39 @@ const AdminDashboard = () => {
       ),
     },
     {
-      header: 'Category',
+      header: t('category'),
       cell: (row) => <span className="font-semibold text-slate-300">{row.category}</span>,
     },
     {
-      header: 'Grade',
+      header: t('grade'),
       cell: (row) => <Badge variant={row.gradeClass}>{row.gradeClass}</Badge>,
     },
     {
-      header: 'Specs',
+      header: t('specs'),
       cell: (row) => (
         <div className="text-xs space-y-0.5">
-          <div className="text-slate-300">Moisture: <strong>{row.moisturePercent}%</strong></div>
-          <div className="text-slate-400">Purity: <strong>{row.purityPercent}%</strong></div>
+          <div className="text-slate-300">{t('moisture')}: <strong>{row.moisturePercent}%</strong></div>
+          <div className="text-slate-400">{t('purity')}: <strong>{row.purityPercent}%</strong></div>
         </div>
       ),
     },
     {
-      header: 'Supplier Raw Rate',
+      header: t('supplierRate'),
       align: 'right',
       cell: (row) => <span className="font-mono font-bold text-slate-300">Rs. {row.rawPrice}</span>,
     },
     {
-      header: 'Buyer Live Price',
+      header: t('buyerPrice'),
       align: 'right',
       cell: (row) => <span className="font-mono font-bold text-gold-gradient text-base">Rs. {row.liveMarketPrice}</span>,
     },
     {
-      header: 'Admin Markup',
+      header: t('adminMarkup'),
       align: 'right',
       cell: (row) => <span className="font-mono text-emerald-400 font-semibold">+ Rs. {row.marginAmount}</span>,
     },
     {
-      header: 'Origin Location',
+      header: t('originLocation'),
       cell: (row) => (
         <div className="text-xs max-w-xs truncate" title={row.origin}>
           <span className="text-slate-300 font-semibold">{row.region}</span>
@@ -277,11 +278,11 @@ const AdminDashboard = () => {
 
   const orderColumns = [
     {
-      header: 'Order Ref',
+      header: t('orderRef'),
       cell: (row) => <span className="font-mono font-bold text-amber-400">#{row._id.substring(18)}</span>,
     },
     {
-      header: 'Commodity',
+      header: t('commodityItem'),
       cell: (row) => (
         <div className="flex items-center gap-2.5">
           <SpiceThumbnail category={row.productId?.category} name={row.productId?.name} size="small" />
@@ -290,26 +291,26 @@ const AdminDashboard = () => {
       ),
     },
     {
-      header: 'Volume Qty',
+      header: t('volumeQty'),
       align: 'right',
       cell: (row) => <span className="font-mono font-bold text-slate-200">{row.quantity} kg</span>,
     },
     {
-      header: 'Buyer Total',
+      header: t('buyerTotal'),
       align: 'right',
       cell: (row) => <span className="font-mono font-bold text-gold-gradient">Rs. {row.totalAmount?.toLocaleString()}</span>,
     },
     {
-      header: 'Supplier Payout',
+      header: t('payoutRate'),
       align: 'right',
       cell: (row) => <span className="font-mono text-slate-300">Rs. {(row.supplierPayoutPrice * row.quantity)?.toLocaleString()}</span>,
     },
     {
-      header: 'Pipeline Status',
+      header: t('status'),
       cell: (row) => <Badge variant={row.status}>{row.status}</Badge>,
     },
     {
-      header: 'OMS Action',
+      header: t('omsAction'),
       align: 'center',
       cell: (row) => (
         <Button variant="outline" size="small" onClick={() => openOmsModal(row)}>
@@ -320,12 +321,12 @@ const AdminDashboard = () => {
   ];
 
   const tabLabels = {
-    dashboard: 'Dashboard Overview',
-    orders: 'Trade Orders (OMS)',
-    inventory: 'Active Inventory',
-    users: 'Approvals Pipeline',
-    pricing: 'Pricing Matrix',
-    ledger: 'Revenue Ledger',
+    dashboard: t('dashboardOverview'),
+    orders: t('tradeOrdersOms'),
+    inventory: t('activeInventory'),
+    users: t('approvalsPipeline'),
+    pricing: t('pricingMatrix'),
+    ledger: t('revenueLedger'),
   };
 
   const sampleNotifications = [
@@ -364,34 +365,33 @@ const AdminDashboard = () => {
           {/* STAT CARDS ROW */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             <StatCard
-              title="Gross Platform Revenue"
+              title={t('grossRevenue')}
               value={ledgerStats ? `Rs. ${ledgerStats.totalGrossRevenue?.toLocaleString()}` : 'Rs. 0'}
-              subtitle="Accumulated margins & fees"
+              subtitle={t('accumulatedMargins')}
               icon={DollarSign}
               accentColor="gold"
               trend={{ value: 12.4, isPositive: true, period: 'vs last week' }}
-              emptyState={{ message: 'No revenues accrued yet — placed trades will reflect here.' }}
             />
             <StatCard
-              title="Total Logistics Cost"
+              title={t('logisticsCost')}
               value={ledgerStats ? `Rs. ${ledgerStats.totalExpenses?.toLocaleString()}` : 'Rs. 0'}
-              subtitle="Rail freight & packaging"
+              subtitle={t('freightPackaging')}
               icon={Truck}
               accentColor="amber"
               trend={{ value: 3.1, isPositive: false, period: 'vs last week' }}
             />
             <StatCard
-              title="Net Margin Profit"
+              title={t('netProfitMargin')}
               value={ledgerStats ? `Rs. ${ledgerStats.totalNetProfit?.toLocaleString()}` : 'Rs. 0'}
-              subtitle="Net platform profitability"
+              subtitle={t('netProfitSub')}
               icon={TrendingUp}
               accentColor="emerald"
               trend={{ value: 18.2, isPositive: true, period: 'vs last week' }}
             />
             <StatCard
-              title="Active Commodities"
+              title={t('activeCommodities')}
               value={`${products.length} Batches`}
-              subtitle="Verified spot market stocks"
+              subtitle={t('verifiedStocks')}
               icon={Layers}
               accentColor="cyan"
               trend={{ value: 8.5, isPositive: true, period: 'vs last period' }}
@@ -414,7 +414,7 @@ const AdminDashboard = () => {
               <div className="panel-glass p-6">
                 <div className="flex justify-between items-center mb-4">
                   <div>
-                    <h3 className="text-base font-bold text-slate-100">Recent OMS Trade Matches</h3>
+                    <h3 className="text-base font-bold text-slate-100">{t('tradeOrdersOms')}</h3>
                     <p className="text-xs text-slate-400">Latest commodity transactions passing through consolidation hubs.</p>
                   </div>
                   <Button variant="outline" size="small" onClick={() => setActiveTab('orders')}>
@@ -424,7 +424,7 @@ const AdminDashboard = () => {
                 <DataTable
                   columns={orderColumns}
                   data={filteredOrders.slice(0, 5)}
-                  emptyMessage="No trade matches logged yet."
+                  emptyMessage={t('noOrdersFound')}
                   onRowClick={openOmsModal}
                 />
               </div>
@@ -436,7 +436,7 @@ const AdminDashboard = () => {
             <div className="space-y-6">
               <div className="flex justify-between items-center">
                 <div>
-                  <h2 className="text-xl font-bold text-gold-gradient">Trade Orders Management (OMS)</h2>
+                  <h2 className="text-xl font-bold text-gold-gradient">{t('tradeOrdersOms')}</h2>
                   <p className="text-xs text-slate-400">State machine pipeline control for anonymized B2B transactions.</p>
                 </div>
               </div>
@@ -447,7 +447,7 @@ const AdminDashboard = () => {
                 <DataTable
                   columns={orderColumns}
                   data={filteredOrders}
-                  emptyMessage="No active trade orders placed."
+                  emptyMessage={t('noOrdersFound')}
                   onRowClick={openOmsModal}
                 />
               )}
@@ -458,7 +458,7 @@ const AdminDashboard = () => {
           {activeTab === 'inventory' && (
             <div className="space-y-6">
               <div>
-                <h2 className="text-xl font-bold text-gold-gradient">Active Commodities Inventory</h2>
+                <h2 className="text-xl font-bold text-gold-gradient">{t('activeInventory')}</h2>
                 <p className="text-xs text-slate-400">Full administrative audit of supplier raw prices, buyer prices, and origins.</p>
               </div>
 
@@ -468,7 +468,7 @@ const AdminDashboard = () => {
                 <DataTable
                   columns={inventoryColumns}
                   data={filteredProducts}
-                  emptyMessage="No spice stocks uploaded yet."
+                  emptyMessage={t('noStocksFound')}
                 />
               )}
             </div>
@@ -478,16 +478,16 @@ const AdminDashboard = () => {
           {activeTab === 'users' && (
             <div className="space-y-6">
               <div>
-                <h2 className="text-xl font-bold text-gold-gradient">Merchant Approvals Pipeline</h2>
+                <h2 className="text-xl font-bold text-gold-gradient">{t('approvalsPipeline')}</h2>
                 <p className="text-xs text-slate-400">Verify GST registration details before issuing Merchant IDs.</p>
               </div>
 
               {pendingUsers.length === 0 ? (
                 <div className="panel-glass p-12 text-center space-y-3">
                   <ShieldCheck size={36} className="text-emerald-400 mx-auto" />
-                  <h3 className="text-base font-bold text-slate-200">No Pending Approvals</h3>
+                  <h3 className="text-base font-bold text-slate-200">{t('noApprovalsFound')}</h3>
                   <p className="text-xs text-slate-400 max-w-sm mx-auto">
-                    All supplier and buyer merchant applications have been reviewed.
+                    {t('allReviewedMsg')}
                   </p>
                 </div>
               ) : (
@@ -496,7 +496,7 @@ const AdminDashboard = () => {
                     <div key={pu._id} className="panel-glass p-5 space-y-3 relative border-amber-500/20">
                       <div className="flex justify-between items-start">
                         <div>
-                          <Badge variant={pu.role}>{pu.role}</Badge>
+                          <Badge variant={pu.role}>{t(pu.role + 'Role') || pu.role}</Badge>
                           <h4 className="text-base font-bold text-slate-100 mt-2">{pu.companyName}</h4>
                           <span className="text-xs text-slate-400">{pu.email}</span>
                         </div>
@@ -519,7 +519,7 @@ const AdminDashboard = () => {
                           onClick={() => handleUserAction(pu._id, 'approve')}
                           icon={Check}
                         >
-                          Approve Profile
+                          {t('approve')}
                         </Button>
                         <Button
                           variant="destructive"
@@ -528,7 +528,7 @@ const AdminDashboard = () => {
                           onClick={() => handleUserAction(pu._id, 'reject')}
                           icon={X}
                         >
-                          Reject
+                          {t('reject')}
                         </Button>
                       </div>
                     </div>
@@ -543,7 +543,7 @@ const AdminDashboard = () => {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2 space-y-6">
                 <div>
-                  <h2 className="text-xl font-bold text-gold-gradient">Margin Configurations Matrix</h2>
+                  <h2 className="text-xl font-bold text-gold-gradient">{t('pricingMatrix')}</h2>
                   <p className="text-xs text-slate-400">Configure margin percentages and fixed markups per category.</p>
                 </div>
 
@@ -565,7 +565,7 @@ const AdminDashboard = () => {
                           setVolumeFeePercent(rule.volumeFeePercent);
                           setCommissionPercent(rule.commissionPercent);
                         }}>
-                          Edit Rule
+                          {t('editRule')}
                         </Button>
                       </div>
                     ))}
@@ -613,7 +613,7 @@ const AdminDashboard = () => {
                   </div>
 
                   <Button type="submit" variant="gold" size="medium" className="w-full mt-2">
-                    Apply Policy Update
+                    {t('applyPolicy')}
                   </Button>
                 </form>
               </div>
@@ -624,7 +624,7 @@ const AdminDashboard = () => {
           {activeTab === 'ledger' && (
             <div className="space-y-6">
               <div>
-                <h2 className="text-xl font-bold text-gold-gradient">Platform Financial Ledger</h2>
+                <h2 className="text-xl font-bold text-gold-gradient">{t('revenueLedger')}</h2>
                 <p className="text-xs text-slate-400">Audited breakdown of gross revenue, logistics expenses, and net profit margins.</p>
               </div>
 
@@ -721,7 +721,7 @@ const AdminDashboard = () => {
               </div>
 
               <Button type="submit" variant="gold" size="medium" className="w-full">
-                Submit Pipeline Update
+                {t('submitPipeline')}
               </Button>
             </form>
 
@@ -749,7 +749,7 @@ const AdminDashboard = () => {
               </div>
 
               <Button type="submit" variant="primary" size="medium" className="w-full">
-                Record Quality Log
+                {t('recordQuality')}
               </Button>
             </form>
           </div>

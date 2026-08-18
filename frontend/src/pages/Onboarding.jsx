@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import Logo from '../components/ui/Logo';
 import Button from '../components/ui/Button';
 import Toast from '../components/ui/Toast';
-import { UserCheck, Sprout, ArrowRight, ShieldCheck, Lock, CheckCircle2 } from 'lucide-react';
+import LanguageToggle from '../components/ui/LanguageToggle';
+import { UserCheck, Sprout, ArrowRight, Lock } from 'lucide-react';
 
 const Onboarding = () => {
   const {
@@ -15,6 +17,8 @@ const Onboarding = () => {
     setLoginStep,
     setPendingCredentials
   } = useAuth();
+
+  const { t } = useLanguage();
 
   const [mode, setMode] = useState('login'); // 'login' | 'register' | 'admin'
   const [role, setRole] = useState('buyer'); // 'buyer' | 'supplier'
@@ -126,7 +130,12 @@ const Onboarding = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 sm:p-6 bg-slate-950 relative overflow-hidden">
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 sm:p-6 bg-slate-950 relative overflow-hidden">
+      {/* Top Language Selector */}
+      <div className="absolute top-6 right-6 z-20">
+        <LanguageToggle />
+      </div>
+
       {/* Background Glow Overlay */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-amber-500/10 blur-[120px] rounded-full pointer-events-none" />
       <div className="absolute bottom-10 right-10 w-80 h-80 bg-emerald-500/10 blur-[100px] rounded-full pointer-events-none" />
@@ -139,7 +148,7 @@ const Onboarding = () => {
         <div className="text-center mb-8">
           <Logo size="large" className="justify-center mb-2" />
           <p className="text-xs text-slate-400 font-medium tracking-wide">
-            Institutional Spice & Agri-Commodity Trading Platform
+            {t('tagline')}
           </p>
         </div>
 
@@ -154,7 +163,7 @@ const Onboarding = () => {
                   : 'text-slate-400 hover:text-slate-200'
               }`}
             >
-              Merchant Login
+              {t('merchantLogin')}
             </button>
             <button
               onClick={() => { setMode('register'); resetFlow(); }}
@@ -164,7 +173,7 @@ const Onboarding = () => {
                   : 'text-slate-400 hover:text-slate-200'
               }`}
             >
-              Register Firm
+              {t('registerFirm')}
             </button>
             <button
               onClick={() => { setMode('admin'); resetFlow(); }}
@@ -174,7 +183,7 @@ const Onboarding = () => {
                   : 'text-slate-400 hover:text-slate-200'
               }`}
             >
-              Admin Console
+              {t('adminConsole')}
             </button>
           </div>
         )}
@@ -193,12 +202,12 @@ const Onboarding = () => {
               <form onSubmit={handleLoginInit} className="space-y-4">
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
-                    Merchant User ID
+                    {t('merchantUserId')}
                   </label>
                   <input
                     type="text"
                     required
-                    placeholder="e.g. NEL-SUP-001 or NEL-BUY-001"
+                    placeholder={t('userIdPlaceholder')}
                     value={userIdInput}
                     onChange={(e) => setUserIdInput(e.target.value)}
                     className="w-full px-4 py-3 text-sm bg-slate-950/80 border border-slate-800 rounded-xl text-slate-200 placeholder-slate-600 focus:outline-none focus:border-amber-500/60 transition-all font-mono"
@@ -207,12 +216,12 @@ const Onboarding = () => {
                 
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
-                    Registered GSTIN Number
+                    {t('registeredGst')}
                   </label>
                   <input
                     type="text"
                     required
-                    placeholder="15-character GST format (e.g. 27AAAAA1111A1Z1)"
+                    placeholder={t('gstPlaceholder')}
                     value={gstInput}
                     onChange={(e) => setGstInput(e.target.value)}
                     className="w-full px-4 py-3 text-sm bg-slate-950/80 border border-slate-800 rounded-xl text-slate-200 placeholder-slate-600 focus:outline-none focus:border-amber-500/60 transition-all font-mono uppercase"
@@ -220,18 +229,18 @@ const Onboarding = () => {
                 </div>
 
                 <Button type="submit" variant="gold" loading={loading} className="w-full mt-2" icon={ArrowRight} iconPosition="right">
-                  Request OTP Passcode
+                  {t('requestOtp')}
                 </Button>
               </form>
             ) : (
               <form onSubmit={handleLoginVerify} className="space-y-5">
                 <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-300/90 leading-relaxed">
-                  Passcode dispatched to the email for ID <strong>{userIdInput}</strong>. Check your console log or inbox.
+                  {t('enterOtpMsg')}
                 </div>
                 
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5 text-center">
-                    Enter 6-Digit Verification Code
+                    {t('enterOtpLabel')}
                   </label>
                   <input
                     type="text"
@@ -246,10 +255,10 @@ const Onboarding = () => {
 
                 <div className="flex gap-3">
                   <Button type="button" variant="secondary" onClick={() => setLoginStep(1)} className="flex-1">
-                    Back
+                    {t('back')}
                   </Button>
                   <Button type="submit" variant="gold" loading={loading} className="flex-[2]">
-                    Verify & Access Dashboard
+                    {t('verifyAndAccess')}
                   </Button>
                 </div>
               </form>
@@ -271,8 +280,8 @@ const Onboarding = () => {
                 }`}
               >
                 <UserCheck size={20} className={role === 'buyer' ? 'text-cyan-400' : 'text-slate-500'} />
-                <div className="font-bold text-xs mt-2">BUYER FIRM</div>
-                <div className="text-[10px] text-slate-400 mt-0.5">Wholesalers & Dealers</div>
+                <div className="font-bold text-xs mt-2">{t('buyerFirm')}</div>
+                <div className="text-[10px] text-slate-400 mt-0.5">{t('wholesalersDealers')}</div>
               </div>
               
               <div
@@ -284,19 +293,19 @@ const Onboarding = () => {
                 }`}
               >
                 <Sprout size={20} className={role === 'supplier' ? 'text-emerald-400' : 'text-slate-500'} />
-                <div className="font-bold text-xs mt-2">SUPPLIER FIRM</div>
-                <div className="text-[10px] text-slate-400 mt-0.5">Farmers & Collectives</div>
+                <div className="font-bold text-xs mt-2">{t('supplierFirm')}</div>
+                <div className="text-[10px] text-slate-400 mt-0.5">{t('farmersCollectives')}</div>
               </div>
             </div>
 
             <div>
               <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">
-                Registered Trade / Farm Name
+                {t('tradeName')}
               </label>
               <input
                 type="text"
                 required
-                placeholder="Official business name"
+                placeholder={t('tradeNamePlaceholder')}
                 value={companyName}
                 onChange={(e) => setCompanyName(e.target.value)}
                 className="w-full px-3.5 py-2.5 text-xs bg-slate-950/80 border border-slate-800 rounded-xl text-slate-200 placeholder-slate-600 focus:outline-none focus:border-emerald-500/50"
@@ -306,7 +315,7 @@ const Onboarding = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">
-                  Email Address
+                  {t('emailAddress')}
                 </label>
                 <input
                   type="email"
@@ -320,7 +329,7 @@ const Onboarding = () => {
 
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">
-                  Security Password
+                  {t('securityPassword')}
                 </label>
                 <input
                   type="password"
@@ -336,7 +345,7 @@ const Onboarding = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">
-                  GSTIN Code
+                  {t('registeredGst')}
                 </label>
                 <input
                   type="text"
@@ -350,7 +359,7 @@ const Onboarding = () => {
 
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">
-                  Contact Phone
+                  {t('contactPhone')}
                 </label>
                 <input
                   type="tel"
@@ -365,7 +374,7 @@ const Onboarding = () => {
 
             <div>
               <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">
-                Operating Address / Location
+                {t('operatingAddress')}
               </label>
               <textarea
                 rows={2}
@@ -378,7 +387,7 @@ const Onboarding = () => {
             </div>
 
             <Button type="submit" variant="primary" loading={loading} className="w-full mt-2">
-              Submit Profile for Validation
+              {t('submitRegistration')}
             </Button>
           </form>
         )}
@@ -388,12 +397,12 @@ const Onboarding = () => {
           <form onSubmit={handleAdminLogin} className="space-y-4">
             <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs text-amber-300/90 flex items-center gap-2.5">
               <Lock size={16} className="text-amber-400 shrink-0" />
-              <span>Platform Administration Portal. Enter master credentials.</span>
+              <span>{t('adminPrompt')}</span>
             </div>
             
             <div>
               <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
-                Admin Email
+                {t('adminEmail')}
               </label>
               <input
                 type="email"
@@ -407,7 +416,7 @@ const Onboarding = () => {
 
             <div>
               <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
-                Master Password
+                {t('masterPassword')}
               </label>
               <input
                 type="password"
@@ -420,7 +429,7 @@ const Onboarding = () => {
             </div>
 
             <Button type="submit" variant="gold" loading={loading} className="w-full mt-2">
-              Authenticate Console
+              {t('authenticateConsole')}
             </Button>
           </form>
         )}

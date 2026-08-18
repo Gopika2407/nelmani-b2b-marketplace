@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth, api } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import Sidebar from '../components/ui/Sidebar';
 import Header from '../components/ui/Header';
 import StatCard from '../components/ui/StatCard';
@@ -8,11 +9,13 @@ import Badge from '../components/ui/Badge';
 import Button from '../components/ui/Button';
 import Toast from '../components/ui/Toast';
 import SpiceThumbnail from '../components/ui/SpiceThumbnail';
-import SkeletonCard, { SkeletonTable } from '../components/ui/Skeleton';
-import { Sprout, PackagePlus, Table, Landmark, HelpCircle, Layers, CheckCircle2, Truck, Info, Plus } from 'lucide-react';
+import { SkeletonTable } from '../components/ui/Skeleton';
+import { Sprout, Landmark, HelpCircle, Layers, Truck, Plus } from 'lucide-react';
 
 const SupplierDashboard = () => {
   const { user, logout } = useAuth();
+  const { t } = useLanguage();
+
   const [stocks, setStocks] = useState([]);
   const [orders, setOrders] = useState([]);
   
@@ -99,7 +102,6 @@ const SupplierDashboard = () => {
     }
   };
 
-  // Calculate earnings KPIs
   const activeOrdersCount = orders.filter(o => !['delivered', 'cancelled', 'rejected'].includes(o.status)).length;
   const totalPayout = orders
     .filter(o => o.status !== 'rejected' && o.status !== 'cancelled')
@@ -112,7 +114,7 @@ const SupplierDashboard = () => {
 
   const stockColumns = [
     {
-      header: 'Commodity Batch',
+      header: t('commodityItem'),
       cell: (row) => (
         <div className="flex items-center gap-3">
           <SpiceThumbnail category={row.category} name={row.name} size="medium" />
@@ -124,34 +126,34 @@ const SupplierDashboard = () => {
       ),
     },
     {
-      header: 'Category',
+      header: t('category'),
       cell: (row) => <span className="font-semibold text-slate-300">{row.category}</span>,
     },
     {
-      header: 'Quality Grade',
+      header: t('grade'),
       cell: (row) => <Badge variant={row.gradeClass}>{row.gradeClass}</Badge>,
     },
     {
-      header: 'Specs',
+      header: t('specs'),
       cell: (row) => (
         <div className="text-xs space-y-0.5">
-          <div className="text-slate-300">Moisture: <strong>{row.moisturePercent}%</strong></div>
-          <div className="text-slate-400">Purity: <strong>{row.purityPercent}%</strong></div>
+          <div className="text-slate-300">{t('moisture')}: <strong>{row.moisturePercent}%</strong></div>
+          <div className="text-slate-400">{t('purity')}: <strong>{row.purityPercent}%</strong></div>
         </div>
       ),
     },
     {
-      header: 'Raw Payout Rate',
+      header: t('supplierRate'),
       align: 'right',
       cell: (row) => <span className="font-mono font-bold text-emerald-400">Rs. {row.rawPrice} / kg</span>,
     },
     {
-      header: 'Raw MOQ',
+      header: "MOQ",
       align: 'right',
       cell: (row) => <span className="font-mono text-slate-300 font-semibold">{row.rawMOQ} kg</span>,
     },
     {
-      header: 'Origin Location',
+      header: t('originLocation'),
       cell: (row) => (
         <div className="text-xs max-w-xs truncate" title={row.origin}>
           <span className="text-slate-300 font-semibold">{row.region}</span>
@@ -163,11 +165,11 @@ const SupplierDashboard = () => {
 
   const orderColumns = [
     {
-      header: 'Order Ref ID',
+      header: t('orderRef'),
       cell: (row) => <span className="font-mono font-bold text-emerald-400">#{row._id.substring(18)}</span>,
     },
     {
-      header: 'Matched Product',
+      header: t('commodityItem'),
       cell: (row) => (
         <div className="flex items-center gap-2.5">
           <SpiceThumbnail category={row.productId?.category} name={row.productId?.name} size="small" />
@@ -176,26 +178,26 @@ const SupplierDashboard = () => {
       ),
     },
     {
-      header: 'Consolidation Qty',
+      header: t('volumeQty'),
       align: 'right',
       cell: (row) => <span className="font-mono font-bold text-slate-200">{row.quantity} kg</span>,
     },
     {
-      header: 'Payout Rate',
+      header: t('payoutRate'),
       align: 'right',
       cell: (row) => <span className="font-mono text-slate-300">Rs. {row.supplierPayoutPrice} / kg</span>,
     },
     {
-      header: 'Pledged Payout Total',
+      header: t('pledgedPayout'),
       align: 'right',
       cell: (row) => <span className="font-mono font-bold text-emerald-400">Rs. {row.supplierPayoutTotal?.toLocaleString()}</span>,
     },
     {
-      header: 'Fulfillment Status',
+      header: t('status'),
       cell: (row) => <Badge variant={row.status}>{row.status}</Badge>,
     },
     {
-      header: 'Logistics Courier',
+      header: "Logistics",
       cell: (row) => (
         <div className="text-xs text-slate-400">
           <div className="font-semibold text-slate-300 flex items-center gap-1">
@@ -209,9 +211,9 @@ const SupplierDashboard = () => {
   ];
 
   const tabLabels = {
-    stocks: 'My Inventory',
-    orders: 'Trade Matches',
-    add: 'Add Spice Batch',
+    stocks: t('myInventory'),
+    orders: t('tradeMatches'),
+    add: t('addSpiceBatch'),
   };
 
   return (
@@ -239,27 +241,27 @@ const SupplierDashboard = () => {
           {/* STAT CARDS */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
             <StatCard
-              title="Commodity Stock Batches"
+              title={t('stockBatches')}
               value={`${stocks.length} Items`}
-              subtitle="Registered spice inventory"
+              subtitle={t('registeredInventory')}
               icon={Layers}
               accentColor="emerald"
               trend={{ value: 5.2, isPositive: true, period: 'vs last week' }}
             />
             <StatCard
-              title="Inbound Trade Matches"
+              title={t('inboundMatches')}
               value={`${activeOrdersCount} Active`}
-              subtitle="Pending hub delivery"
+              subtitle={t('pendingHubDelivery')}
               icon={Sprout}
               accentColor="amber"
             />
             <StatCard
-              title="Total Payout Accrued"
+              title={t('totalPayout')}
               value={`Rs. ${totalPayout.toLocaleString()}`}
-              subtitle="Excludes rejected trades"
+              subtitle={t('excludesRejected')}
               icon={Landmark}
               accentColor="emerald"
-              trend={{ value: 14.8, isPositive: true, period: 'vs last week' }}
+              trend={{ value: 14.8, isPositive: true, period: 'vs last period' }}
             />
           </div>
 
@@ -268,11 +270,11 @@ const SupplierDashboard = () => {
             <div className="space-y-6">
               <div className="flex justify-between items-center">
                 <div>
-                  <h2 className="text-xl font-bold text-emerald-gradient">Commodity Batches Under Custody</h2>
+                  <h2 className="text-xl font-bold text-emerald-gradient">{t('myInventory')}</h2>
                   <p className="text-xs text-slate-400">All registered spice stocks uploaded from your farm or processing unit.</p>
                 </div>
                 <Button variant="primary" size="medium" onClick={() => setActiveTab('add')} icon={Plus}>
-                  Add Spice Batch
+                  {t('addSpiceBatch')}
                 </Button>
               </div>
 
@@ -282,7 +284,7 @@ const SupplierDashboard = () => {
                 <DataTable
                   columns={stockColumns}
                   data={filteredStocks}
-                  emptyMessage="No spice stock batches uploaded yet. Click 'Add Spice Batch' to list your inventory."
+                  emptyMessage={t('noStocksFound')}
                 />
               )}
             </div>
@@ -294,12 +296,12 @@ const SupplierDashboard = () => {
               <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-300/90 flex items-start gap-3">
                 <HelpCircle size={18} className="text-emerald-400 shrink-0 mt-0.5" />
                 <div>
-                  <strong className="text-emerald-400">B2B Anonymity Rule:</strong> Buyer identities and contact info are hidden. Deliver matched stock to the nearest rail consolidation point reference code before the packing deadline.
+                  {t('privacyNotice')}
                 </div>
               </div>
 
               <div>
-                <h2 className="text-xl font-bold text-emerald-gradient">Matched B2B Trade Shipments</h2>
+                <h2 className="text-xl font-bold text-emerald-gradient">{t('tradeMatches')}</h2>
                 <p className="text-xs text-slate-400">Orders matched by the platform admin for consolidated fulfillment.</p>
               </div>
 
@@ -309,7 +311,7 @@ const SupplierDashboard = () => {
                 <DataTable
                   columns={orderColumns}
                   data={orders}
-                  emptyMessage="No routed trade matches currently assigned."
+                  emptyMessage={t('noOrdersFound')}
                 />
               )}
             </div>
@@ -320,7 +322,7 @@ const SupplierDashboard = () => {
             <div className="panel-glass p-8 max-w-3xl mx-auto space-y-6 border-emerald-500/30">
               <div className="flex items-center justify-between pb-4 border-b border-slate-800">
                 <div>
-                  <h2 className="text-xl font-bold text-emerald-gradient">Register Commodity Batch</h2>
+                  <h2 className="text-xl font-bold text-emerald-gradient">{t('addSpiceBatch')}</h2>
                   <p className="text-xs text-slate-400">Publish your spice stock to the Nelmani B2B spot marketplace.</p>
                 </div>
                 <SpiceThumbnail category={category} name={name} size="large" />
@@ -335,7 +337,7 @@ const SupplierDashboard = () => {
               <form onSubmit={handleAddStock} className="space-y-4 text-xs">
                 <div>
                   <label className="block font-bold text-slate-400 mb-1 uppercase">
-                    Spice / Stock Batch Title
+                    {t('commodityItem')}
                   </label>
                   <input
                     type="text"
@@ -349,22 +351,22 @@ const SupplierDashboard = () => {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block font-bold text-slate-400 mb-1 uppercase">Spice Category</label>
+                    <label className="block font-bold text-slate-400 mb-1 uppercase">{t('category')}</label>
                     <select
                       value={category}
                       onChange={(e) => setCategory(e.target.value)}
                       className="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-slate-200 font-semibold"
                     >
-                      <option value="Cardamom">Cardamom</option>
-                      <option value="Black Pepper">Black Pepper</option>
-                      <option value="Turmeric">Turmeric</option>
-                      <option value="Clove">Clove</option>
-                      <option value="Ginger">Ginger</option>
+                      <option value="Cardamom">{t('cardamom')}</option>
+                      <option value="Black Pepper">{t('blackPepper')}</option>
+                      <option value="Turmeric">{t('turmeric')}</option>
+                      <option value="Clove">{t('clove')}</option>
+                      <option value="Ginger">{t('ginger')}</option>
                     </select>
                   </div>
 
                   <div>
-                    <label className="block font-bold text-slate-400 mb-1 uppercase">Quality Grade</label>
+                    <label className="block font-bold text-slate-400 mb-1 uppercase">{t('grade')}</label>
                     <select
                       value={gradeClass}
                       onChange={(e) => setGradeClass(e.target.value)}
@@ -379,7 +381,7 @@ const SupplierDashboard = () => {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block font-bold text-slate-400 mb-1 uppercase">Your Raw Payout Price (Rs. / kg)</label>
+                    <label className="block font-bold text-slate-400 mb-1 uppercase">{t('supplierRate')} (Rs. / kg)</label>
                     <input
                       type="number"
                       required
@@ -391,7 +393,7 @@ const SupplierDashboard = () => {
                   </div>
 
                   <div>
-                    <label className="block font-bold text-slate-400 mb-1 uppercase">Your Raw MOQ (kg)</label>
+                    <label className="block font-bold text-slate-400 mb-1 uppercase">Raw MOQ (kg)</label>
                     <input
                       type="number"
                       required
@@ -405,7 +407,7 @@ const SupplierDashboard = () => {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block font-bold text-slate-400 mb-1 uppercase">Moisture Spec (%)</label>
+                    <label className="block font-bold text-slate-400 mb-1 uppercase">{t('moisture')} Spec (%)</label>
                     <input
                       type="number"
                       step="0.1"
@@ -418,7 +420,7 @@ const SupplierDashboard = () => {
                   </div>
 
                   <div>
-                    <label className="block font-bold text-slate-400 mb-1 uppercase">Purity Spec (%)</label>
+                    <label className="block font-bold text-slate-400 mb-1 uppercase">{t('purity')} Spec (%)</label>
                     <input
                       type="number"
                       step="0.1"
@@ -460,7 +462,7 @@ const SupplierDashboard = () => {
                 </div>
 
                 <Button type="submit" variant="primary" loading={submitting} className="w-full mt-2" size="large">
-                  Publish Commodity Batch
+                  {t('addSpiceBatch')}
                 </Button>
               </form>
             </div>

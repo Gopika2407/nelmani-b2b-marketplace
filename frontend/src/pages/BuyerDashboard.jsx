@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth, api } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import Sidebar from '../components/ui/Sidebar';
 import Header from '../components/ui/Header';
 import StatCard from '../components/ui/StatCard';
@@ -9,16 +10,17 @@ import Button from '../components/ui/Button';
 import Modal from '../components/ui/Modal';
 import Toast from '../components/ui/Toast';
 import SpiceThumbnail from '../components/ui/SpiceThumbnail';
-import SkeletonCard, { SkeletonTable } from '../components/ui/Skeleton';
-import { ShoppingBag, ClipboardList, Info, Truck, HelpCircle, RefreshCw, ShoppingCart, Layers, Landmark } from 'lucide-react';
+import { SkeletonTable } from '../components/ui/Skeleton';
+import { ShoppingBag, Info, Truck, RefreshCw, ShoppingCart, Layers, Landmark } from 'lucide-react';
 
 const BuyerDashboard = () => {
   const { user, logout } = useAuth();
+  const { t } = useLanguage();
   
   // States
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
-  const [activeTab, setActiveTab] = useState('marketplace'); // 'marketplace' | 'orders'
+  const [activeTab, setActiveTab] = useState('marketplace');
   const [searchTerm, setSearchTerm] = useState('');
 
   // Order placing modal states
@@ -114,7 +116,7 @@ const BuyerDashboard = () => {
 
   const productColumns = [
     {
-      header: 'Commodity Market Item',
+      header: t('commodityItem'),
       cell: (row) => (
         <div className="flex items-center gap-3">
           <SpiceThumbnail category={row.category} name={row.name} size="medium" />
@@ -126,42 +128,42 @@ const BuyerDashboard = () => {
       ),
     },
     {
-      header: 'Category',
+      header: t('category'),
       cell: (row) => <span className="font-semibold text-slate-300">{row.category}</span>,
     },
     {
-      header: 'Quality Grade',
+      header: t('grade'),
       cell: (row) => <Badge variant={row.gradeClass}>{row.gradeClass}</Badge>,
     },
     {
-      header: 'Specs',
+      header: t('specs'),
       cell: (row) => (
         <div className="text-xs space-y-0.5">
-          <div className="text-slate-300">Moisture: <strong>{row.moisturePercent}%</strong></div>
-          <div className="text-slate-400">Purity: <strong>{row.purityPercent}%</strong></div>
+          <div className="text-slate-300">{t('moisture')}: <strong>{row.moisturePercent}%</strong></div>
+          <div className="text-slate-400">{t('purity')}: <strong>{row.purityPercent}%</strong></div>
         </div>
       ),
     },
     {
-      header: 'Origin Region',
+      header: t('originLocation'),
       cell: (row) => <span className="text-xs font-semibold text-slate-300">{row.region}</span>,
     },
     {
-      header: 'Live Spot Price',
+      header: t('buyerPrice'),
       align: 'right',
       cell: (row) => <span className="font-mono font-bold text-gold-gradient text-base">Rs. {row.liveMarketPrice} / kg</span>,
     },
     {
-      header: 'Market MOQ',
+      header: "MOQ",
       align: 'right',
       cell: (row) => <span className="font-mono text-slate-300 font-semibold">{row.buyerMOQ} kg</span>,
     },
     {
-      header: 'Trade Action',
+      header: t('actions'),
       align: 'center',
       cell: (row) => (
         <Button variant="gold" size="small" onClick={() => openCheckout(row)} icon={ShoppingCart}>
-          Place Order
+          {t('placeOrder')}
         </Button>
       ),
     },
@@ -169,11 +171,11 @@ const BuyerDashboard = () => {
 
   const orderColumns = [
     {
-      header: 'Order Ref ID',
+      header: t('orderRef'),
       cell: (row) => <span className="font-mono font-bold text-amber-400">#{row._id.substring(18)}</span>,
     },
     {
-      header: 'Commodity',
+      header: t('commodityItem'),
       cell: (row) => (
         <div className="flex items-center gap-2.5">
           <SpiceThumbnail category={row.productId?.category} name={row.productId?.name} size="small" />
@@ -182,26 +184,26 @@ const BuyerDashboard = () => {
       ),
     },
     {
-      header: 'Volume Qty',
+      header: t('volumeQty'),
       align: 'right',
       cell: (row) => <span className="font-mono font-bold text-slate-200">{row.quantity} kg</span>,
     },
     {
-      header: 'Spot Rate',
+      header: "Spot Rate",
       align: 'right',
       cell: (row) => <span className="font-mono text-slate-300">Rs. {row.negotiatedPrice} / kg</span>,
     },
     {
-      header: 'Total Net Cost',
+      header: t('buyerTotal'),
       align: 'right',
       cell: (row) => <span className="font-mono font-bold text-gold-gradient">Rs. {row.totalAmount?.toLocaleString()}</span>,
     },
     {
-      header: 'Pipeline Status',
+      header: t('status'),
       cell: (row) => <Badge variant={row.status}>{row.status}</Badge>,
     },
     {
-      header: 'Tracking Details',
+      header: "Tracking",
       cell: (row) => (
         <div className="text-xs text-slate-400">
           <div className="font-semibold text-slate-300 flex items-center gap-1">
@@ -215,8 +217,8 @@ const BuyerDashboard = () => {
   ];
 
   const tabLabels = {
-    marketplace: 'Spot Marketplace Catalog',
-    orders: 'My Orders History',
+    marketplace: t('spotMarketplace'),
+    orders: t('myOrders'),
   };
 
   return (
@@ -244,24 +246,24 @@ const BuyerDashboard = () => {
           {/* STAT CARDS */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
             <StatCard
-              title="Spot Market Batches"
+              title={t('spotBatches')}
               value={`${products.length} Commodities`}
-              subtitle="Live Verified Batches"
+              subtitle={t('verifiedStocks')}
               icon={Layers}
               accentColor="cyan"
               trend={{ value: 6.4, isPositive: true, period: 'vs last week' }}
             />
             <StatCard
-              title="My Orders Placed"
+              title={t('myOrdersPlaced')}
               value={`${orders.length} Orders`}
-              subtitle="Active & completed trades"
+              subtitle={t('myOrders')}
               icon={ShoppingBag}
               accentColor="gold"
             />
             <StatCard
-              title="Total Capital Transacted"
+              title={t('capitalTransacted')}
               value={`Rs. ${totalSpent.toLocaleString()}`}
-              subtitle="Excludes rejected trades"
+              subtitle={t('excludesRejected')}
               icon={Landmark}
               accentColor="emerald"
               trend={{ value: 22.1, isPositive: true, period: 'vs last period' }}
@@ -273,11 +275,11 @@ const BuyerDashboard = () => {
             <div className="space-y-6">
               <div className="flex justify-between items-center">
                 <div>
-                  <h2 className="text-xl font-bold text-cyan-300">Live Spot Commodity Market</h2>
+                  <h2 className="text-xl font-bold text-cyan-300">{t('spotMarketplace')}</h2>
                   <p className="text-xs text-slate-400">Verified agri-commodity stocks with dynamic margin pricing.</p>
                 </div>
                 <Button variant="secondary" size="small" onClick={fetchData} icon={RefreshCw}>
-                  Refresh Prices
+                  {t('refreshPrices')}
                 </Button>
               </div>
 
@@ -287,7 +289,7 @@ const BuyerDashboard = () => {
                 <DataTable
                   columns={productColumns}
                   data={filteredProducts}
-                  emptyMessage="No live commodity stocks currently listed in the spot marketplace."
+                  emptyMessage={t('noItemsFound')}
                 />
               )}
             </div>
@@ -299,12 +301,12 @@ const BuyerDashboard = () => {
               <div className="p-4 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-xs text-cyan-300/90 flex items-start gap-3">
                 <Info size={18} className="text-cyan-400 shrink-0 mt-0.5" />
                 <div>
-                  <strong className="text-cyan-300">Merchant Privacy Guarantee:</strong> Supplier contact details and raw payout breakdown are restricted. All trade mediation is conducted via Nelmani regional consolidation hubs.
+                  {t('buyerPrivacyNotice')}
                 </div>
               </div>
 
               <div>
-                <h2 className="text-xl font-bold text-cyan-300">My Trade Orders Ledger</h2>
+                <h2 className="text-xl font-bold text-cyan-300">{t('myOrders')}</h2>
                 <p className="text-xs text-slate-400">Track pipeline status transitions, quality approvals, and courier references.</p>
               </div>
 
@@ -314,7 +316,7 @@ const BuyerDashboard = () => {
                 <DataTable
                   columns={orderColumns}
                   data={orders}
-                  emptyMessage="You have not placed any trade orders yet."
+                  emptyMessage={t('noOrdersFound')}
                 />
               )}
             </div>
@@ -390,7 +392,7 @@ const BuyerDashboard = () => {
             </div>
 
             <Button type="submit" variant="gold" size="large" loading={submitting} className="w-full mt-2">
-              Submit Purchase Order to OMS
+              {t('submitPurchase')}
             </Button>
           </form>
         )}

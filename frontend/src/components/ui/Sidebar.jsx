@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import Logo from './Logo';
 import Badge from './Badge';
+import LanguageToggle from './LanguageToggle';
+import { useLanguage } from '../../context/LanguageContext';
 import { 
   LayoutDashboard, Layers, ShoppingBag, Users, Settings, 
-  BarChart3, LogOut, ChevronLeft, ChevronRight, Sprout, ShieldCheck, UserCheck
+  BarChart3, LogOut, ChevronLeft, ChevronRight, Sprout
 } from 'lucide-react';
 
 const Sidebar = ({
@@ -15,28 +17,29 @@ const Sidebar = ({
   ordersCount = 0,
 }) => {
   const [collapsed, setCollapsed] = useState(false);
+  const { t } = useLanguage();
 
   const getRoleNavItems = () => {
     if (user?.role === 'admin') {
       return [
-        { id: 'dashboard', label: 'Dashboard Overview', icon: LayoutDashboard },
-        { id: 'orders', label: 'Trade Orders (OMS)', icon: ShoppingBag, badge: ordersCount },
-        { id: 'inventory', label: 'Active Inventory', icon: Layers },
-        { id: 'users', label: 'Approvals Pipeline', icon: Users, badge: pendingApprovalsCount },
-        { id: 'pricing', label: 'Pricing Matrix', icon: Settings },
-        { id: 'ledger', label: 'Revenue Ledger', icon: BarChart3 },
+        { id: 'dashboard', label: t('dashboardOverview'), icon: LayoutDashboard },
+        { id: 'orders', label: t('tradeOrdersOms'), icon: ShoppingBag, badge: ordersCount },
+        { id: 'inventory', label: t('activeInventory'), icon: Layers },
+        { id: 'users', label: t('approvalsPipeline'), icon: Users, badge: pendingApprovalsCount },
+        { id: 'pricing', label: t('pricingMatrix'), icon: Settings },
+        { id: 'ledger', label: t('revenueLedger'), icon: BarChart3 },
       ];
     } else if (user?.role === 'supplier') {
       return [
-        { id: 'stocks', label: 'My Inventory', icon: Layers },
-        { id: 'orders', label: 'Trade Matches', icon: ShoppingBag, badge: ordersCount },
-        { id: 'add', label: 'Add Spice Batch', icon: Sprout },
+        { id: 'stocks', label: t('myInventory'), icon: Layers },
+        { id: 'orders', label: t('tradeMatches'), icon: ShoppingBag, badge: ordersCount },
+        { id: 'add', label: t('addSpiceBatch'), icon: Sprout },
       ];
     } else {
       // Buyer
       return [
-        { id: 'marketplace', label: 'Spot Marketplace', icon: Layers },
-        { id: 'orders', label: 'My Orders', icon: ShoppingBag, badge: ordersCount },
+        { id: 'marketplace', label: t('spotMarketplace'), icon: Layers },
+        { id: 'orders', label: t('myOrders'), icon: ShoppingBag, badge: ordersCount },
       ];
     }
   };
@@ -46,17 +49,14 @@ const Sidebar = ({
   const roleAccents = {
     admin: {
       badge: 'admin',
-      border: 'border-amber-500/30',
       activeItem: 'bg-gradient-to-r from-amber-500/20 to-transparent text-amber-400 border-l-4 border-amber-400',
     },
     supplier: {
       badge: 'supplier',
-      border: 'border-emerald-500/30',
       activeItem: 'bg-gradient-to-r from-emerald-500/20 to-transparent text-emerald-400 border-l-4 border-emerald-400',
     },
     buyer: {
       badge: 'buyer',
-      border: 'border-cyan-500/30',
       activeItem: 'bg-gradient-to-r from-cyan-500/20 to-transparent text-cyan-300 border-l-4 border-cyan-400',
     },
   };
@@ -87,9 +87,9 @@ const Sidebar = ({
 
       {/* Role Indicator Banner */}
       {!collapsed && (
-        <div className="px-5 py-3 border-b border-slate-800/50 bg-slate-900/40 flex items-center justify-between">
-          <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">PORTAL ACCESS</span>
-          <Badge variant={roleStyle.badge}>{user?.role?.toUpperCase()}</Badge>
+        <div className="px-4 py-3 border-b border-slate-800/50 bg-slate-900/40 flex items-center justify-between">
+          <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">{t('portalAccess')}</span>
+          <Badge variant={roleStyle.badge}>{t(user?.role + 'Role') || user?.role?.toUpperCase()}</Badge>
         </div>
       )}
 
@@ -103,7 +103,7 @@ const Sidebar = ({
             <button
               key={item.id}
               onClick={() => setActiveTab(item.id)}
-              className={`w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-semibold transition-all duration-200 ${
+              className={`w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 ${
                 isActive
                   ? roleStyle.activeItem
                   : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/60'
@@ -123,32 +123,39 @@ const Sidebar = ({
       </nav>
 
       {/* User Profile & Logout Bottom Bar */}
-      <div className="p-4 border-t border-slate-800/80 bg-slate-900/50 flex items-center justify-between">
-        {!collapsed ? (
-          <div className="flex items-center gap-3 overflow-hidden">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-500/20 to-emerald-500/20 border border-amber-500/40 flex items-center justify-center font-bold text-amber-300 shrink-0">
-              {user?.companyName?.charAt(0) || user?.email?.charAt(0)?.toUpperCase() || 'U'}
-            </div>
-            <div className="flex flex-col truncate">
-              <span className="text-xs font-bold text-slate-200 truncate">
-                {user?.companyName || user?.email}
-              </span>
-              <span className="text-[10px] font-mono text-emerald-400">
-                {user?.userId || 'ID: PENDING'}
-              </span>
-            </div>
+      <div className="p-4 border-t border-slate-800/80 bg-slate-900/50 space-y-3">
+        {!collapsed && (
+          <div className="flex justify-center">
+            <LanguageToggle />
           </div>
-        ) : null}
+        )}
+        <div className="flex items-center justify-between">
+          {!collapsed ? (
+            <div className="flex items-center gap-3 overflow-hidden">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-500/20 to-emerald-500/20 border border-amber-500/40 flex items-center justify-center font-bold text-amber-300 shrink-0">
+                {user?.companyName?.charAt(0) || user?.email?.charAt(0)?.toUpperCase() || 'U'}
+              </div>
+              <div className="flex flex-col truncate">
+                <span className="text-xs font-bold text-slate-200 truncate">
+                  {user?.companyName || user?.email}
+                </span>
+                <span className="text-[10px] font-mono text-emerald-400">
+                  {user?.userId || 'ID: PENDING'}
+                </span>
+              </div>
+            </div>
+          ) : null}
 
-        <button
-          onClick={logout}
-          className={`p-2.5 rounded-xl bg-slate-900 hover:bg-red-500/20 text-slate-400 hover:text-red-400 border border-slate-800 hover:border-red-500/30 transition-all ${
-            collapsed ? 'mx-auto' : ''
-          }`}
-          title="Sign Out"
-        >
-          <LogOut size={16} />
-        </button>
+          <button
+            onClick={logout}
+            className={`p-2.5 rounded-xl bg-slate-900 hover:bg-red-500/20 text-slate-400 hover:text-red-400 border border-slate-800 hover:border-red-500/30 transition-all ${
+              collapsed ? 'mx-auto' : ''
+            }`}
+            title={t('signOut')}
+          >
+            <LogOut size={16} />
+          </button>
+        </div>
       </div>
     </aside>
   );

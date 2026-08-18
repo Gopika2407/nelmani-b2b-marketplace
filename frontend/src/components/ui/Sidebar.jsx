@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Logo from './Logo';
 import Badge from './Badge';
 import LanguageToggle from './LanguageToggle';
@@ -16,8 +16,19 @@ const Sidebar = ({
   pendingApprovalsCount = 0,
   ordersCount = 0,
 }) => {
-  const [collapsed, setCollapsed] = useState(false);
+  // Auto-collapse on small mobile screens (< 768px)
+  const [collapsed, setCollapsed] = useState(() => window.innerWidth < 768);
   const { t } = useLanguage();
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setCollapsed(true);
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const getRoleNavItems = () => {
     if (user?.role === 'admin') {
@@ -65,10 +76,10 @@ const Sidebar = ({
 
   return (
     <aside className={`h-screen sticky top-0 bg-slate-950/90 backdrop-blur-xl border-r border-slate-800/80 flex flex-col justify-between transition-all duration-300 z-40 shrink-0 ${
-      collapsed ? 'w-20' : 'w-64'
+      collapsed ? 'w-16 sm:w-20' : 'w-60 sm:w-64'
     }`}>
       {/* Top Header & Logo */}
-      <div className="p-5 border-b border-slate-800/80 flex items-center justify-between">
+      <div className="p-3 sm:p-5 border-b border-slate-800/80 flex items-center justify-between">
         {!collapsed ? (
           <Logo size="small" />
         ) : (
@@ -78,7 +89,7 @@ const Sidebar = ({
         )}
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className="hidden md:flex p-1.5 rounded-lg bg-slate-900 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700"
+          className="flex p-1.5 rounded-lg bg-slate-900 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700"
           title={collapsed ? "Expand Sidebar" : "Collapse Sidebar"}
         >
           {collapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
@@ -94,7 +105,7 @@ const Sidebar = ({
       )}
 
       {/* Navigation Link List */}
-      <nav className="flex-1 px-3 py-4 space-y-1.5 overflow-y-auto">
+      <nav className="flex-1 px-2 sm:px-3 py-4 space-y-1.5 overflow-y-auto">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = activeTab === item.id;
@@ -103,7 +114,7 @@ const Sidebar = ({
             <button
               key={item.id}
               onClick={() => setActiveTab(item.id)}
-              className={`w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 ${
+              className={`w-full flex items-center gap-3 px-3 py-3 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 ${
                 isActive
                   ? roleStyle.activeItem
                   : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/60'
@@ -123,7 +134,7 @@ const Sidebar = ({
       </nav>
 
       {/* User Profile & Logout Bottom Bar */}
-      <div className="p-4 border-t border-slate-800/80 bg-slate-900/50 space-y-3">
+      <div className="p-3 sm:p-4 border-t border-slate-800/80 bg-slate-900/50 space-y-3">
         {!collapsed && (
           <div className="flex justify-center">
             <LanguageToggle />

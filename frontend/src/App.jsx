@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { LanguageProvider } from './context/LanguageContext';
+import { ThemeProvider } from './context/ThemeContext';
 import Onboarding from './pages/Onboarding';
 import SupplierDashboard from './pages/SupplierDashboard';
 import BuyerDashboard from './pages/BuyerDashboard';
@@ -13,10 +14,10 @@ const DashboardResolver = () => {
 
   if (loading) {
     return (
-      <div style={{ display: 'flex', minHeight: '100vh', alignItems: 'center', justifyContent: 'center', background: '#080c09' }}>
-        <div className="glass-panel" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px', padding: '32px' }}>
+      <div style={{ display: 'flex', minHeight: '100vh', alignItems: 'center', justifyContent: 'center' }}>
+        <div className="panel-glass" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px', padding: '32px' }}>
           <Loader2 size={36} className="animate-spin text-amber-400" />
-          <p style={{ color: '#94a3b8', fontSize: '0.95rem' }}>Loading Nelmani Commerce Hub...</p>
+          <p style={{ fontSize: '0.95rem' }}>Loading Nelmani Commerce Hub...</p>
         </div>
       </div>
     );
@@ -53,22 +54,24 @@ const OnboardingResolver = () => {
 
 const App = () => {
   return (
-    <LanguageProvider>
-      <AuthProvider>
-        <Router>
-          <Routes>
-            <Route path="/onboarding/*" element={
-              <div style={{ minHeight: '100vh' }}>
-                <Routes>
-                  <Route path="/" element={<OnboardingResolver />} />
-                </Routes>
-              </div>
-            } />
-            <Route path="/*" element={<DashboardResolver />} />
-          </Routes>
-        </Router>
-      </AuthProvider>
-    </LanguageProvider>
+    <ThemeProvider>
+      <LanguageProvider>
+        <AuthProvider>
+          <Router>
+            <Routes>
+              <Route path="/onboarding/*" element={
+                <div style={{ minHeight: '100vh' }}>
+                  <Routes>
+                    <Route path="/" element={<OnboardingResolver />} />
+                  </Routes>
+                </div>
+              } />
+              <Route path="/*" element={<DashboardResolver />} />
+            </Routes>
+          </Router>
+        </AuthProvider>
+      </LanguageProvider>
+    </ThemeProvider>
   );
 };
 

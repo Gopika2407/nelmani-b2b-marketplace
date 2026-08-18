@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Search, Bell, ChevronRight, Clock } from 'lucide-react';
 import LanguageToggle from './LanguageToggle';
+import ThemeToggle from './ThemeToggle';
 import { useLanguage } from '../../context/LanguageContext';
 
 const Header = ({
@@ -26,8 +27,11 @@ const Header = ({
         <span className="text-slate-200 font-bold capitalize">{activeTabLabel}</span>
       </div>
 
-      {/* Right Controls: Language Toggle, Search, Notifications, Profile */}
+      {/* Right Controls: Theme Toggle, Language Toggle, Search, Notifications, Profile */}
       <div className="flex items-center gap-3">
+        {/* Theme Switcher */}
+        <ThemeToggle />
+
         {/* Language Switcher */}
         <LanguageToggle />
 
@@ -39,7 +43,7 @@ const Header = ({
             placeholder={t('searchPlaceholder')}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-56 lg:w-64 pl-9 pr-4 py-1.5 text-xs bg-slate-900/80 border border-slate-800 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:border-amber-500/50 transition-all"
+            className="w-48 lg:w-56 pl-9 pr-4 py-1.5 text-xs bg-slate-900/80 border border-slate-800 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:border-amber-500/50 transition-all"
           />
         </div>
 
